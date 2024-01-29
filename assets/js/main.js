@@ -3,7 +3,7 @@ const loadMoreButton = document.getElementById('loadMoreButton')
 const modal = document.querySelector('#viewDetails')
 
 const maxRecords = 151
-const limit = 10
+const limit = 15
 let offset = 0;
 
 function convertPokemonToLi(pokemon) {
@@ -47,23 +47,6 @@ function loadPokemonItens(offset, limit) {
     })
 }
 
-loadPokemonItens(offset, limit)
-
-loadMoreButton.addEventListener('click', () => {
-    offset += limit
-    const qtdRecordsWithNexPage = offset + limit
-
-    if (qtdRecordsWithNexPage >= maxRecords) {
-        const newLimit = maxRecords - offset
-        loadPokemonItens(offset, newLimit)
-
-        loadMoreButton.parentElement.removeChild(loadMoreButton)
-    } else {
-        loadPokemonItens(offset, limit)
-    }
-})
-
-
 function showDetails(pokeID){
     const pokeItem = document.querySelector(`#${pokeID}`)
     
@@ -73,5 +56,20 @@ function showDetails(pokeID){
 
 document.querySelector('#close-modal').addEventListener('click', (element) => {
     modal.classList.toggle('hide')
-
+    
 })
+
+document.addEventListener('scrollend', (event) => {
+    offset += limit
+    const qtdRecordsWithNexPage = offset + limit
+
+    if (offset != qtdRecordsWithNexPage){
+        if (qtdRecordsWithNexPage >= maxRecords) {
+            const newLimit = maxRecords - offset
+            loadPokemonItens(offset, newLimit)
+
+        } else { loadPokemonItens(offset, limit) }
+    }
+})
+
+loadPokemonItens(offset, limit)
